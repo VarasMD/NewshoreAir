@@ -1,5 +1,6 @@
 ﻿using NewshoreAir.Interface.Business;
 using NewshoreAir.Interface.DataAccess;
+using NewshoreAir.Interface.Gateway;
 using NewshoreApi.Entities.Entities;
 
 namespace NewshoreAir.Business
@@ -9,13 +10,15 @@ namespace NewshoreAir.Business
         #region Private Fields
         private readonly IFlightDataAccess _flightDataAccess;
         private readonly IJourneyDataAccess _journeyDataAccess;
+        private readonly IRouteGateway _routeGateway;
         #endregion
 
         #region Constructor
-        public JourneyBusiness(IFlightDataAccess flightDataAccess, IJourneyDataAccess journeyDataAccess)
+        public JourneyBusiness(IFlightDataAccess flightDataAccess, IJourneyDataAccess journeyDataAccess, IRouteGateway routeGateway)
         {
             _flightDataAccess = flightDataAccess;
             _journeyDataAccess = journeyDataAccess;
+            _routeGateway = routeGateway;
         }
         #endregion
 
@@ -36,8 +39,8 @@ namespace NewshoreAir.Business
             }
 
             // Ruta no encontrada en la base de datos, calcularla
-            var flights = _flightDataAccess.GetFlights();
-            var journeys = FindRoutes(origin, destination, flights, new List<Flight>(), new HashSet<string>(), maxFlights);
+            var routes = _routeGateway.GetRoutes().Result;
+            var journeys = FindJourneys(origin, destination, routes, new List<Flight>(), new HashSet<string>(), maxFlights);
 
             if (journeys.Count == 0)
             {
@@ -63,17 +66,17 @@ namespace NewshoreAir.Business
         #endregion
 
         #region Private Methods
-        private List<Journey> FindRoutes(string currentLocation, string destination, List<Flight> flights, List<Flight> currentPath, HashSet<string> visited, int? maxFlights = null)
+        private List<Journey> FindJourneys(string currentLocation, string destination, List<Route> routes, List<Flight> currentPath, HashSet<string> visited, int? maxFlights = null)
         {
             var validRoutes = new List<Journey>();
 
             visited.Add(currentLocation);
 
-            foreach (var flight in flights.Where(f => f.Origin == currentLocation && !visited.Contains(f.Destination)))
+            foreach (var route in routes.Where(route => route.DepartureStation == currentLocation && !visited.Contains(route.ArrivalStation)))
             {
-                currentPath.Add(flight);
+                currentPath.Add(route.ConvertToFlight());
 
-                if (flight.Destination == destination)
+                if (route.ArrivalStation == destination)
                 {
                     // Encontrada una ruta completa
                     // Verificar la cantidad de vuelos en la ruta
@@ -94,13 +97,13 @@ namespace NewshoreAir.Business
                     if (!maxFlights.HasValue || currentPath.Count < maxFlights)
                     {
                         // Continuar la búsqueda recursiva con la restricción de cantidad máxima de vuelos
-                        var nextRoutes = FindRoutes(flight.Destination, destination, flights, currentPath, visited, maxFlights);
+                        var nextRoutes = FindJourneys(route.ArrivalStation, destination, routes, currentPath, visited, maxFlights);
                         validRoutes.AddRange(nextRoutes);
                     }
                 }
 
                 // Deshacer el cambio para probar otras rutas
-                currentPath.Remove(flight);
+                currentPath.Remove(currentPath.Last());
             }
 
             visited.Remove(currentLocation);
