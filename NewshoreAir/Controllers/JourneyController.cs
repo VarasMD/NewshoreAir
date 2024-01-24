@@ -31,7 +31,7 @@ namespace NewshoreAir.Controllers
             var journeys = _journeyBusiness.GetJourneys(origin, destination, maxFlights);
 
             var journeysResponse = _mapper.Map<List<JourneyResponse>>(journeys);
-            _logger.LogInformation("Successfully generated response in YourEndpoint");
+            _logger.LogInformation("Successfully generated response in Endpoint");
 
             return Ok(journeysResponse);
         }
