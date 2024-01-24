@@ -62,7 +62,7 @@ namespace NewshoreAir.DataAccess
             }
         }
 
-        public void SaveJourney(Journey journey)
+        public void SaveJourney(List<Journey> journeys)
         {
             using (var connection = new SqliteConnection("Data Source=./NewshoreAirDataBase.db"))
             {
@@ -72,31 +72,35 @@ namespace NewshoreAir.DataAccess
                 {
                     try
                     {
-                        var journeyId = connection.ExecuteScalar<int>(@"
-                        INSERT INTO Journey (Origin, Destination, Price) 
-                        VALUES (@Origin, @Destination, @Price);
-                        SELECT last_insert_rowid();",
-                            new { journey.Origin, journey.Destination, journey.Price });
-
-                        foreach (var flight in journey.Flights)
+                        foreach (var journey in journeys)
                         {
-                            var flightId = connection.ExecuteScalar<int>(@"
-                        INSERT INTO Flight (TransportFlightCarrier, TransportFlightNumber, Origin, Destination, Price)
-                        VALUES (@FlightCarrier, @FlightNumber, @Origin, @Destination, @Price);
-                        SELECT last_insert_rowid();",
-                                new { flight.Transport.FlightCarrier, flight.Transport.FlightNumber, flight.Origin, flight.Destination, flight.Price });
+                            var journeyId = connection.ExecuteScalar<int>(@"
+                            INSERT INTO Journey (Origin, Destination, Price) 
+                            VALUES (@Origin, @Destination, @Price);
+                            SELECT last_insert_rowid();",
+                                new { journey.Origin, journey.Destination, journey.Price });
 
-                            connection.Execute(@"
-                        INSERT INTO Transport (FlightId, TransportFlightCarrier, TransportFlightNumber) 
-                        VALUES (@FlightId, @FlightCarrier, @FlightNumber);
-                        SELECT last_insert_rowid();",
-                                new { FlightId = flightId, flight.Transport.FlightCarrier, flight.Transport.FlightNumber });
+                                foreach (var flight in journey.Flights)
+                                {
+                                    var flightId = connection.ExecuteScalar<int>(@"
+                                    INSERT INTO Flight (TransportFlightCarrier, TransportFlightNumber, Origin, Destination, Price)
+                                    VALUES (@FlightCarrier, @FlightNumber, @Origin, @Destination, @Price);
+                                    SELECT last_insert_rowid();",
+                                                new { flight.Transport.FlightCarrier, flight.Transport.FlightNumber, flight.Origin, flight.Destination, flight.Price });
 
-                            connection.Execute(@"
-                        INSERT INTO JourneyFlight (JourneyId, FlightId) 
-                        VALUES (@JourneyId, @FlightId);",
-                                new { JourneyId = journeyId, FlightId = flightId });
+                                            connection.Execute(@"
+                                    INSERT INTO Transport (FlightId, TransportFlightCarrier, TransportFlightNumber) 
+                                    VALUES (@FlightId, @FlightCarrier, @FlightNumber);
+                                    SELECT last_insert_rowid();",
+                                                new { FlightId = flightId, flight.Transport.FlightCarrier, flight.Transport.FlightNumber });
+
+                                            connection.Execute(@"
+                                    INSERT INTO JourneyFlight (JourneyId, FlightId) 
+                                    VALUES (@JourneyId, @FlightId);",
+                                                new { JourneyId = journeyId, FlightId = flightId });
+                                }
                         }
+                        
 
                         transaction.Commit();
                     }

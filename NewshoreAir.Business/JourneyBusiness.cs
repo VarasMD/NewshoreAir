@@ -32,18 +32,16 @@ namespace NewshoreAir.Business
 
             var routes = _routeGateway.GetRoutes().Result;
             var journeys = FindJourneys(origin, destination, routes, new List<Flight>(), new HashSet<string>());
+            var journeysResult = FilterJourneysByMaxFlights(journeys, maxFlights);
 
-            if (journeys.Count == 0)
+            if (journeysResult.Count == 0)
             {
                 throw new NoFlightsFoundException();
             }
 
-            foreach (var journey in journeys)
-            {
-                _journeyDataAccess.SaveJourney(journey);
-            }
+            _journeyDataAccess.SaveJourney(journeys);
 
-            return FilterJourneysByMaxFlights(journeys, maxFlights);
+            return journeysResult;
         }
 
         public class NoFlightsFoundException : Exception
@@ -92,7 +90,7 @@ namespace NewshoreAir.Business
 
         private List<Journey> FilterJourneysByMaxFlights(List<Journey> journeys, int? maxFlights)
         {
-            if (maxFlights.HasValue)
+            if (maxFlights.HasValue && journeys.Count > 0)
             {
                 return journeys.Where(journey => journey.Flights.Count <= maxFlights).ToList();
             }
