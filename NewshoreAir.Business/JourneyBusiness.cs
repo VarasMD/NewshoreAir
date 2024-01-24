@@ -42,7 +42,7 @@ namespace NewshoreAir.Business
             if (journeysResult.Count == 0)
             {
                 _logger.LogWarning($"No flights were found for the trip from {origin} to {destination}.");
-                throw new InvalidOperationException("No flights were found for this trip.");
+                throw new NoFlightsFoundException();
             }
 
             _logger.LogInformation($"Flight search successfully completed.");
@@ -50,6 +50,13 @@ namespace NewshoreAir.Business
             _journeyDataAccess.SaveJourney(journeys);
 
             return journeysResult;
+        }
+
+        public class NoFlightsFoundException : Exception
+        {
+            public NoFlightsFoundException() : base("No flights were found for this trip.")
+            {
+            }
         }
         #endregion
 
