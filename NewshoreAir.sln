@@ -3,9 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33815.320
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewshoreAir", "NewshoreAir\NewshoreAir.csproj", "{E318774A-19FA-4C45-9DAD-6071F188C95D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NewshoreAir", "NewshoreAir\NewshoreAir.csproj", "{E318774A-19FA-4C45-9DAD-6071F188C95D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{98033CA4-B9BC-4BCC-84B7-E63A2B776C23}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewshoreAir.Business", "NewshoreAir.Business\NewshoreAir.Business.csproj", "{C96B3633-FDDC-44B0-9ADB-09942D1E5606}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewshoreAir.DataAccess", "NewshoreAir.DataAccess\NewshoreAir.DataAccess.csproj", "{6ECC382F-634A-4B5F-AFEA-F6D08538A56D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewshoreApi.Entities", "NewshoreApi.Entities\NewshoreApi.Entities.csproj", "{C7AC58D6-CFEA-4D31-A550-7F4BEEF0B8A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewshoreAir.Interface", "NewshoreAir.Interface\NewshoreAir.Interface.csproj", "{9EE044A3-35D9-4D23-9A4A-D7B4BF158F89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NewshoreAir.Gateway", "NewshoreAir.Gateway\NewshoreAir.Gateway.csproj", "{09AD1F9C-B4B4-4B67-9C28-ABCF71A475C4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,6 +27,26 @@ Global
 		{E318774A-19FA-4C45-9DAD-6071F188C95D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E318774A-19FA-4C45-9DAD-6071F188C95D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E318774A-19FA-4C45-9DAD-6071F188C95D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C96B3633-FDDC-44B0-9ADB-09942D1E5606}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C96B3633-FDDC-44B0-9ADB-09942D1E5606}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C96B3633-FDDC-44B0-9ADB-09942D1E5606}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C96B3633-FDDC-44B0-9ADB-09942D1E5606}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ECC382F-634A-4B5F-AFEA-F6D08538A56D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ECC382F-634A-4B5F-AFEA-F6D08538A56D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ECC382F-634A-4B5F-AFEA-F6D08538A56D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ECC382F-634A-4B5F-AFEA-F6D08538A56D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7AC58D6-CFEA-4D31-A550-7F4BEEF0B8A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7AC58D6-CFEA-4D31-A550-7F4BEEF0B8A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7AC58D6-CFEA-4D31-A550-7F4BEEF0B8A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7AC58D6-CFEA-4D31-A550-7F4BEEF0B8A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9EE044A3-35D9-4D23-9A4A-D7B4BF158F89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9EE044A3-35D9-4D23-9A4A-D7B4BF158F89}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9EE044A3-35D9-4D23-9A4A-D7B4BF158F89}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9EE044A3-35D9-4D23-9A4A-D7B4BF158F89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09AD1F9C-B4B4-4B67-9C28-ABCF71A475C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09AD1F9C-B4B4-4B67-9C28-ABCF71A475C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09AD1F9C-B4B4-4B67-9C28-ABCF71A475C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09AD1F9C-B4B4-4B67-9C28-ABCF71A475C4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -8,15 +8,13 @@ namespace NewshoreAir.Business
     public class JourneyBusiness : IJourneyBusiness
     {
         #region Private Fields
-        private readonly IFlightDataAccess _flightDataAccess;
         private readonly IJourneyDataAccess _journeyDataAccess;
         private readonly IRouteGateway _routeGateway;
         #endregion
 
         #region Constructor
-        public JourneyBusiness(IFlightDataAccess flightDataAccess, IJourneyDataAccess journeyDataAccess, IRouteGateway routeGateway)
+        public JourneyBusiness(IJourneyDataAccess journeyDataAccess, IRouteGateway routeGateway)
         {
-            _flightDataAccess = flightDataAccess;
             _journeyDataAccess = journeyDataAccess;
             _routeGateway = routeGateway;
         }
@@ -25,17 +23,17 @@ namespace NewshoreAir.Business
         #region Public Methods
         public List<Journey> GetJourneys(string origin, string destination, int? maxFlights = null)
         {
-            var journeysFromDatabase = _journeyDataAccess.GetJourneys(); //podria buscar especificamente origen y destino y evitar el siguiente paso
+            var journeysFromDatabase = _journeyDataAccess.GetJourneys(origin, destination); //podria buscar especificamente origen y destino y evitar el siguiente paso
 
             // Lógica para verificar si la ruta ya ha sido calculada
-            var existingJourneys = journeysFromDatabase
-            .Where(journey => journey.Origin == origin && journey.Destination == destination && (!maxFlights.HasValue || journey.Flights.Count <= maxFlights))
-            .ToList();
+            //var existingJourneys = journeysFromDatabase
+            //.Where(journey => journey.Origin == origin && journey.Destination == destination && (!maxFlights.HasValue || journey.Flights.Count <= maxFlights))
+            //.ToList();
 
-            if (existingJourneys.Count > 0)
+            if (journeysFromDatabase.Count > 0)
             {
                 // Rutas previamente calculadas, devolverlas
-                return existingJourneys;
+                return journeysFromDatabase;
             }
 
             // Ruta no encontrada en la base de datos, calcularla

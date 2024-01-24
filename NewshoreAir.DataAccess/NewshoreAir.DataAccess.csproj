@@ -6,4 +6,18 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="NewshoreAirDB.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.28" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NewshoreAir.Interface\NewshoreAir.Interface.csproj" />
+    <ProjectReference Include="..\NewshoreApi.Entities\NewshoreApi.Entities.csproj" />
+  </ItemGroup>
+
 </Project>

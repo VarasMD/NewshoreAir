@@ -5,6 +5,7 @@ using NewshoreAir.Interface.Business;
 
 namespace NewshoreAir.Controllers
 {
+    [Route("api/journeys")]
     public class JourneyController : ControllerBase
     {
         #region Private Field
@@ -22,11 +23,11 @@ namespace NewshoreAir.Controllers
 
         #region Public Methods
         [HttpGet("{origin}/{destination}")]
-        public ActionResult<List<JourneyResponse>> GetJourney([FromQuery] string origin, [FromQuery] string destination, [FromQuery] int? maxFlights)
+        public ActionResult<List<JourneyResponse>> GetJourney(string origin, string destination, [FromQuery] int? maxFlights)
         {
             var journeys = _journeyBusiness.GetJourneys(origin, destination, maxFlights);
 
-            var journeysResponse = _mapper.Map<JourneyResponse>(journeys);
+            var journeysResponse = _mapper.Map<List<JourneyResponse>>(journeys);
 
             return Ok(journeysResponse);
         }

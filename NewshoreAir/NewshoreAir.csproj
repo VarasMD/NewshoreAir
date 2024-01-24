@@ -7,11 +7,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove=".NewshoreAirDB.db" />
+    <None Remove="NewshoreAirDataBase.db" />
+    <None Remove="NewshoreAirDB.db" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="NewshoreAirDataBase.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.0" />
     <PackageReference Include="AutoMoq" Version="2.0.0" />
     <PackageReference Include="AutoMoqCore" Version="2.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NewshoreAir.Business\NewshoreAir.Business.csproj" />
+    <ProjectReference Include="..\NewshoreAir.DataAccess\NewshoreAir.DataAccess.csproj" />
+    <ProjectReference Include="..\NewshoreAir.Gateway\NewshoreAir.Gateway.csproj" />
+    <ProjectReference Include="..\NewshoreAir.Interface\NewshoreAir.Interface.csproj" />
   </ItemGroup>
 
 </Project>
