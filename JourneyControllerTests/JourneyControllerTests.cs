@@ -107,7 +107,7 @@ namespace JourneyControllerTests
         }
 
         [Fact]
-        public void GetJourneyNoFlightsFoundException()
+        public void GetJourneyNoFlightsFound()
         {
             // Arrange
             var mockJourneyBusiness = _autoMoqer.GetMock<IJourneyBusiness>();
@@ -118,10 +118,37 @@ namespace JourneyControllerTests
 
             mockJourneyBusiness
                 .Setup(x => x.GetJourneys(origin, destination, maxFlights))
-                .Throws(new InvalidOperationException());
+                .Throws(new JourneyBusiness.NoFlightsFoundException());
 
-            // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => _journeyController.GetJourney(origin, destination, maxFlights));
+            // Act
+            var result = _journeyController.GetJourney(origin, destination, maxFlights).Result;
+
+            // Assert
+            var notFoundResult = Assert.IsType<NotFoundObjectResult>(result);
+            Assert.Equal("No flights were found for this trip.", notFoundResult.Value);
+        }
+
+        [Fact]
+        public void GetJourneyInternalServerError()
+        {
+            // Arrange
+            var mockJourneyBusiness = _autoMoqer.GetMock<IJourneyBusiness>();
+
+            var origin = "Origin";
+            var destination = "Destination";
+            var maxFlights = 2;
+
+            mockJourneyBusiness
+                .Setup(x => x.GetJourneys(origin, destination, maxFlights))
+                .Throws(new Exception("Some error message"));
+
+            // Act
+            var result = _journeyController.GetJourney(origin, destination, maxFlights).Result;
+
+            // Assert
+            var statusCodeResult = Assert.IsType<ObjectResult>(result);
+            Assert.Equal(500, statusCodeResult.StatusCode);
+            Assert.Equal("Internal Server Error", statusCodeResult.Value);
         }
     }
 }

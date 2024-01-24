@@ -98,7 +98,7 @@ namespace JourneyManagerTests
             var journeyBusiness = new JourneyBusiness(mockJourneyDataAccess.Object, mockRouteGateway.Object, mockLogging.Object);
 
             // Act & Assert
-            Xunit.Assert.Throws<InvalidOperationException>(() =>
+            Xunit.Assert.Throws<JourneyBusiness.NoFlightsFoundException>(() =>
             {
                 var result = journeyBusiness.GetJourneys("Origin", "Destination");
             });
