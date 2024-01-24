@@ -10,6 +10,8 @@ using Moq;
 using NewshoreAir.DTO.Transport.Response;
 using NewshoreAir.DTO.Flight.Response;
 using System.Net;
+using Microsoft.Extensions.Logging;
+using NewshoreAir.Business;
 
 namespace JourneyControllerTests
 {
@@ -30,7 +32,8 @@ namespace JourneyControllerTests
             // Arrange
             var mockMapper = new Mock<IMapper>();
             var mockJourneyBusiness = new Mock<IJourneyBusiness>();
-            var controller = new JourneyController(mockMapper.Object, mockJourneyBusiness.Object);
+            var mockLogging = new Mock<ILogger<JourneyController>>();
+            var controller = new JourneyController(mockMapper.Object, mockJourneyBusiness.Object, mockLogging.Object);
 
             var origin = "Origin";
             var destination = "Destination";
@@ -115,10 +118,10 @@ namespace JourneyControllerTests
 
             mockJourneyBusiness
                 .Setup(x => x.GetJourneys(origin, destination, maxFlights))
-                .Throws(new NoFlightsFoundException());
+                .Throws(new InvalidOperationException());
 
             // Act & Assert
-            Assert.Throws<NoFlightsFoundException>(() => _journeyController.GetJourney(origin, destination, maxFlights));
+            Assert.Throws<InvalidOperationException>(() => _journeyController.GetJourney(origin, destination, maxFlights));
         }
     }
 }

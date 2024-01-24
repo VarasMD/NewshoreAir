@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.Extensions.Logging;
+using Moq;
 using NewshoreAir.Business;
 using NewshoreAir.Interface.DataAccess;
 using NewshoreAir.Interface.Gateway;
@@ -50,7 +51,9 @@ namespace JourneyManagerTests
 
             var mockRouteGateway = new Mock<IRouteGateway>();
 
-            var journeyBusiness = new JourneyBusiness(mockJourneyDataAccess.Object, mockRouteGateway.Object);
+            var mockLogging = new Mock<ILogger<JourneyBusiness>>();
+
+            var journeyBusiness = new JourneyBusiness(mockJourneyDataAccess.Object, mockRouteGateway.Object, mockLogging.Object);
 
             // Act
             var result = journeyBusiness.GetJourneys("Origin", "Destination");
@@ -90,10 +93,12 @@ namespace JourneyManagerTests
             var mockRouteGateway = new Mock<IRouteGateway>();
             mockRouteGateway.Setup(x => x.GetRoutes()).ReturnsAsync(expectedRoutes);
 
-            var journeyBusiness = new JourneyBusiness(mockJourneyDataAccess.Object, mockRouteGateway.Object);
+            var mockLogging = new Mock<ILogger<JourneyBusiness>>();
+
+            var journeyBusiness = new JourneyBusiness(mockJourneyDataAccess.Object, mockRouteGateway.Object, mockLogging.Object);
 
             // Act & Assert
-            Xunit.Assert.Throws<JourneyBusiness.NoFlightsFoundException>(() =>
+            Xunit.Assert.Throws<InvalidOperationException>(() =>
             {
                 var result = journeyBusiness.GetJourneys("Origin", "Destination");
             });
