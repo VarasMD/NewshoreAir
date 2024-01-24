@@ -51,13 +51,6 @@ namespace NewshoreAir.Business
 
             return journeysResult;
         }
-
-        //public class NoFlightsFoundException : Exception
-        //{
-        //    public NoFlightsFoundException() : base("No flights were found for this trip.")
-        //    {
-        //    }
-        //}
         #endregion
 
         #region Private Methods
