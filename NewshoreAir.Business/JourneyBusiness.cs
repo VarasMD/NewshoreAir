@@ -23,30 +23,21 @@ namespace NewshoreAir.Business
         #region Public Methods
         public List<Journey> GetJourneys(string origin, string destination, int? maxFlights = null)
         {
-            var journeysFromDatabase = _journeyDataAccess.GetJourneys(origin, destination); //podria buscar especificamente origen y destino y evitar el siguiente paso
-
-            // Lógica para verificar si la ruta ya ha sido calculada
-            //var existingJourneys = journeysFromDatabase
-            //.Where(journey => journey.Origin == origin && journey.Destination == destination && (!maxFlights.HasValue || journey.Flights.Count <= maxFlights))
-            //.ToList();
+            var journeysFromDatabase = _journeyDataAccess.GetJourneys(origin, destination, maxFlights);
 
             if (journeysFromDatabase.Count > 0)
             {
-                // Rutas previamente calculadas, devolverlas
                 return journeysFromDatabase;
             }
 
-            // Ruta no encontrada en la base de datos, calcularla
             var routes = _routeGateway.GetRoutes().Result;
             var journeys = FindJourneys(origin, destination, routes, new List<Flight>(), new HashSet<string>(), maxFlights);
 
             if (journeys.Count == 0)
             {
-                // No se encontraron vuelos para este viaje, lanzar excepción
                 throw new NoFlightsFoundException();
             }
 
-            // Guardar la nueva ruta en la base de datos
             foreach (var journey in journeys)
             {
                 _journeyDataAccess.SaveJourney(journey);
@@ -76,8 +67,6 @@ namespace NewshoreAir.Business
 
                 if (route.ArrivalStation == destination)
                 {
-                    // Encontrada una ruta completa
-                    // Verificar la cantidad de vuelos en la ruta
                     if (!maxFlights.HasValue || currentPath.Count <= maxFlights)
                     {
                         var journey = new Journey
@@ -94,13 +83,11 @@ namespace NewshoreAir.Business
                 {
                     if (!maxFlights.HasValue || currentPath.Count < maxFlights)
                     {
-                        // Continuar la búsqueda recursiva con la restricción de cantidad máxima de vuelos
                         var nextRoutes = FindJourneys(route.ArrivalStation, destination, routes, currentPath, visited, maxFlights);
                         validRoutes.AddRange(nextRoutes);
                     }
                 }
 
-                // Deshacer el cambio para probar otras rutas
                 currentPath.Remove(currentPath.Last());
             }
 
