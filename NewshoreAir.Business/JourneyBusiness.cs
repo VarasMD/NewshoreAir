@@ -31,7 +31,7 @@ namespace NewshoreAir.Business
             }
 
             var routes = _routeGateway.GetRoutes().Result;
-            var journeys = FindJourneys(origin, destination, routes, new List<Flight>(), new HashSet<string>(), maxFlights);
+            var journeys = FindJourneys(origin, destination, routes, new List<Flight>(), new HashSet<string>());
 
             if (journeys.Count == 0)
             {
@@ -43,7 +43,7 @@ namespace NewshoreAir.Business
                 _journeyDataAccess.SaveJourney(journey);
             }
 
-            return journeys;
+            return FilterJourneysByMaxFlights(journeys, maxFlights);
         }
 
         public class NoFlightsFoundException : Exception
@@ -67,25 +67,19 @@ namespace NewshoreAir.Business
 
                 if (route.ArrivalStation == destination)
                 {
-                    if (!maxFlights.HasValue || currentPath.Count <= maxFlights)
+                    var journey = new Journey
                     {
-                        var journey = new Journey
-                        {
-                            Origin = currentPath.First().Origin,
-                            Destination = currentPath.Last().Destination,
-                            Flights = currentPath.ToList(),
-                            Price = currentPath.Sum(f => f.Price)
-                        };
-                        validRoutes.Add(journey);
-                    }
+                        Origin = currentPath.First().Origin,
+                        Destination = currentPath.Last().Destination,
+                        Flights = currentPath.ToList(),
+                        Price = currentPath.Sum(f => f.Price)
+                    };
+                    validRoutes.Add(journey);
                 }
                 else
                 {
-                    if (!maxFlights.HasValue || currentPath.Count < maxFlights)
-                    {
-                        var nextRoutes = FindJourneys(route.ArrivalStation, destination, routes, currentPath, visited, maxFlights);
-                        validRoutes.AddRange(nextRoutes);
-                    }
+                     var nextRoutes = FindJourneys(route.ArrivalStation, destination, routes, currentPath, visited, maxFlights);
+                     validRoutes.AddRange(nextRoutes);
                 }
 
                 currentPath.Remove(currentPath.Last());
@@ -94,6 +88,15 @@ namespace NewshoreAir.Business
             visited.Remove(currentLocation);
 
             return validRoutes;
+        }
+
+        private List<Journey> FilterJourneysByMaxFlights(List<Journey> journeys, int? maxFlights)
+        {
+            if (maxFlights.HasValue)
+            {
+                return journeys.Where(journey => journey.Flights.Count <= maxFlights).ToList();
+            }
+            return journeys;
         }
         #endregion
     }
