@@ -1,4 +1,5 @@
-﻿using NewshoreAir.Interface.Business;
+﻿using Microsoft.Extensions.Logging;
+using NewshoreAir.Interface.Business;
 using NewshoreAir.Interface.DataAccess;
 using NewshoreAir.Interface.Gateway;
 using NewshoreApi.Entities.Entities;
@@ -10,23 +11,27 @@ namespace NewshoreAir.Business
         #region Private Fields
         private readonly IJourneyDataAccess _journeyDataAccess;
         private readonly IRouteGateway _routeGateway;
+        private readonly ILogger<JourneyBusiness> _logger;
         #endregion
 
         #region Constructor
-        public JourneyBusiness(IJourneyDataAccess journeyDataAccess, IRouteGateway routeGateway)
+        public JourneyBusiness(IJourneyDataAccess journeyDataAccess, IRouteGateway routeGateway, ILogger<JourneyBusiness> logger)
         {
             _journeyDataAccess = journeyDataAccess;
             _routeGateway = routeGateway;
+            _logger = logger;
         }
         #endregion
 
         #region Public Methods
         public List<Journey> GetJourneys(string origin, string destination, int? maxFlights = null)
         {
+            _logger.LogInformation($"Starting journeys search from {origin} to {destination}.");
             var journeysFromDatabase = _journeyDataAccess.GetJourneys(origin, destination, maxFlights);
 
             if (journeysFromDatabase.Count > 0)
             {
+                _logger.LogInformation($"Flight search successfully completed in DataBase");
                 return journeysFromDatabase;
             }
 
@@ -36,8 +41,11 @@ namespace NewshoreAir.Business
 
             if (journeysResult.Count == 0)
             {
+                _logger.LogWarning($"No flights were found for the trip from {origin} to {destination}.");
                 throw new NoFlightsFoundException();
             }
+
+            _logger.LogInformation($"Flight search successfully completed.");
 
             _journeyDataAccess.SaveJourney(journeys);
 
@@ -46,7 +54,7 @@ namespace NewshoreAir.Business
 
         public class NoFlightsFoundException : Exception
         {
-            public NoFlightsFoundException() : base("No se encontraron vuelos para este viaje.")
+            public NoFlightsFoundException() : base("No flights were found for this trip.")
             {
             }
         }
