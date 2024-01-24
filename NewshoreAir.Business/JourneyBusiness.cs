@@ -53,7 +53,7 @@ namespace NewshoreAir.Business
         #endregion
 
         #region Private Methods
-        private List<Journey> FindJourneys(string currentLocation, string destination, List<Route> routes, List<Flight> currentPath, HashSet<string> visited, int? maxFlights = null)
+        private List<Journey> FindJourneys(string currentLocation, string destination, List<Route> routes, List<Flight> currentPath, HashSet<string> visited)
         {
             var validRoutes = new List<Journey>();
 
@@ -76,7 +76,7 @@ namespace NewshoreAir.Business
                 }
                 else
                 {
-                     var nextRoutes = FindJourneys(route.ArrivalStation, destination, routes, currentPath, visited, maxFlights);
+                     var nextRoutes = FindJourneys(route.ArrivalStation, destination, routes, currentPath, visited);
                      validRoutes.AddRange(nextRoutes);
                 }
 

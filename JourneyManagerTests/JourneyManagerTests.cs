@@ -98,7 +98,7 @@ namespace JourneyManagerTests
                 var result = journeyBusiness.GetJourneys("Origin", "Destination");
             });
 
-            mockJourneyDataAccess.Verify(x => x.SaveJourney(It.IsAny<Journey>()), Times.Never);
+            mockJourneyDataAccess.Verify(x => x.SaveJourney(It.IsAny<List<Journey>>()), Times.Never);
         }
     }
 }
